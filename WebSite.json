@@ -8,10 +8,8 @@
     },
     "skuName": {
       "type": "string",
-      "defaultValue": "F1",
+      "defaultValue": "B1",
       "allowedValues": [
-        "F1",
-        "D1",
         "B1",
         "B2",
         "B3",
@@ -191,9 +189,6 @@
               "detailLevel": "requestContent, responseContent"
             },
             "packageUri": "https://github.com/JitendraMishra2010/CRMArchival/raw/master/ArchivalWebApp.zip",
-            "setParameters": {
-              "IIS Web Application Name": "[variables('webSiteName')]"
-            }
           },
           "tags": {
             "displayName": "WebDeployforWebApp"
@@ -214,7 +209,6 @@
       "properties": {
         "accountType": "[parameters('storageaccountType')]"
       }
-      
     }
   ]
 }
