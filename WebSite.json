@@ -55,6 +55,7 @@
     }
   },
   "variables": {
+    "webSiteName": "[concat('ws', uniqueString(resourceGroup().id))]",
     "storageaccountName": "[concat('stracc', uniqueString(resourceGroup().id))]"
   },
   "resources": [
@@ -86,7 +87,7 @@
     },
     {
       "apiVersion": "2015-08-01",
-      "name": "[parameters('webSiteName')]",
+      "name": "[variables('webSiteName')]",
       "type": "Microsoft.Web/sites",
       "location": "[resourceGroup().location]",
       "tags": {
@@ -99,7 +100,7 @@
         "[concat('Microsoft.Storage/storageAccounts/',variables('storageaccountName'))]"
       ],
       "properties": {
-        "name": "[parameters('webSiteName')]",
+        "name": "[variables('webSiteName')]",
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]",
         "siteConfig": {
           "phpVersion": "off",
@@ -134,7 +135,7 @@
           "type": "config",
           "name": "web",
           "dependsOn": [
-            "[concat('Microsoft.Web/Sites/', parameters('webSiteName'))]",
+            "[concat('Microsoft.Web/Sites/', variables('webSiteName'))]",
             "[concat('Microsoft.DocumentDb/databaseAccounts/', parameters('databaseAccountName'))]"
           ],
           "properties": {
@@ -162,7 +163,7 @@
         {
           "apiVersion": "2015-08-01",
           "dependsOn": [
-            "[concat('Microsoft.Web/sites/', parameters('webSiteName'))]"
+            "[concat('Microsoft.Web/sites/', variables('webSiteName'))]"
           ],
           "location": "[resourceGroup().location]",
           "name": "MSDeploy",
@@ -191,7 +192,7 @@
             },
             "packageUri": "https://github.com/JitendraMishra2010/CRMArchival/raw/master/ArchivalWebApp.zip",
             "setParameters": {
-              "IIS Web Application Name": "[parameters('webSiteName')]"
+              "IIS Web Application Name": "[variables('webSiteName')]"
             }
           },
           "tags": {
