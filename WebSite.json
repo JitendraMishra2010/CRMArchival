@@ -102,10 +102,16 @@
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]",
         "siteConfig": {
           "phpVersion": "off",
+          "alwaysOn": true,
           "connectionStrings": [
             {
               "ConnectionString": "[Concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageaccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageaccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
               "Name": "AzureWebJobsDashboard",
+              "Type": 3
+            },
+            {
+              "ConnectionString": "[Concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageaccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageaccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
+              "Name": "AzureWebJobsStorage",
               "Type": 3
             }
           ],
@@ -121,6 +127,10 @@
             {
               "Value": "[Concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageaccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageaccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
               "Name": "AzureWebJobsDashboard"
+            },
+            {
+              "Value": "[Concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageaccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageaccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
+              "Name": "AzureWebJobsStorage"
             }
           ]
         }
