@@ -32,6 +32,29 @@
     "webSiteName": {
       "type": "string"
     },
+
+    "CRMUserName": {
+      "type": "string"
+    },
+
+    "CRMPassword": {
+      "type": "securestring"
+    },
+
+
+    "ObjectId": {
+      "type": "string"
+    },
+
+
+    "AADClientAppId": {
+      "type": "string"
+    },
+
+
+    "AADClientsecretKey": {
+      "type": "securestring"
+    },
     "skuCapacity": {
       "type": "int",
       "defaultValue": 1,
@@ -54,7 +77,8 @@
   },
   "variables": {
     "webSiteName": "[concat('ws', uniqueString(resourceGroup().id))]",
-    "storageaccountName": "[concat('stracc', uniqueString(resourceGroup().id))]"
+    "storageaccountName": "[concat('stracc', uniqueString(resourceGroup().id))]",
+    "KeyVaultName": "[concat('ArVault', uniqueString(resourceGroup().id),'a')]"
   },
   "resources": [
     {
@@ -131,6 +155,18 @@
             {
               "Value": "[Concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageaccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageaccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
               "Name": "AzureWebJobsStorage"
+            },
+            {
+              "Value": "[parameters('AADClientAppId')]",
+              "Name": "keyvaultclientId"
+            },
+            {
+              "Value": "[parameters('AADClientsecretKey')]",
+              "Name": "keyvaultclientsecretId"
+            },
+            {
+              "Value": "[concat('https://',variables('KeyVaultName'), '.vault.azure.net/')]",
+              "Name": "keyvaulturl"
             }
           ]
         }
@@ -198,7 +234,7 @@
             "debugSetting": {
               "detailLevel": "requestContent, responseContent"
             },
-            "packageUri": "https://github.com/JitendraMishra2010/CRMArchival/raw/master/ArchivalWebApp.zip",
+            "packageUri": "https://github.com/JitendraMishra2010/CRMArchival/raw/master/ArchivalWebApp.zip"
           },
           "tags": {
             "displayName": "WebDeployforWebApp"
@@ -219,7 +255,71 @@
       "properties": {
         "accountType": "[parameters('storageaccountType')]"
       }
+    },
+
+
+
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "name": "[variables('KeyVaultName')]",
+      "apiVersion": "2015-06-01",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "KeyVault"
+      },
+      "properties": {
+        "tenantId": "[subscription().tenantId]",
+        "accessPolicies": [
+          {
+            "tenantId": "[subscription().tenantId]",
+            "objectId": "[parameters('ObjectId')]",
+
+            "permissions": {
+              "keys": [
+                "all"
+              ],
+              "secrets": [
+                "all"
+              ]
+
+            }
+          }
+
+        ],
+        "enabledForTemplateDeployment": true,
+        "sku": {
+          "name": "Standard",
+          "family": "A"
+        }
+
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[concat(variables('KeyVaultName'), '/','UserName')]",
+      "apiVersion": "2015-06-01",
+      "properties": {
+        "contentType": "text/plain",
+        "value": "[parameters('CRMUserName')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.KeyVault/vaults/', variables('KeyVaultName'))]"
+
+      ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[concat(variables('KeyVaultName'), '/','Password')]",
+      "apiVersion": "2015-06-01",
+      "properties": {
+        "contentType": "text/plain",
+        "value": "[parameters('CRMPassword')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.KeyVault/vaults/', variables('KeyVaultName'))]"
+      ]
     }
+
   ]
 }
 
