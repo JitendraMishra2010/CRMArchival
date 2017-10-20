@@ -33,6 +33,9 @@
       "type": "string"
     },
 
+    "CRMResourceUrl": {
+      "type": "string"
+    },
     "CRMUserName": {
       "type": "string"
     },
@@ -127,6 +130,7 @@
         "siteConfig": {
           "phpVersion": "off",
           "alwaysOn": true,
+          
           "connectionStrings": [
             {
               "ConnectionString": "[Concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageaccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageaccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
@@ -141,11 +145,11 @@
           ],
           "appSettings": [
             {
-              "Name": "DOCUMENTDB_ENDPOINT",
+              "Name": "DocumentDB.EndpointUrl",
               "Value": "[reference(concat('Microsoft.DocumentDb/databaseAccounts/', parameters('databaseAccountName'))).documentEndpoint]"
             },
             {
-              "Name": "DOCUMENTDB_PRIMARY_KEY",
+              "Name": "DocumentDB.PrimaryKey",
               "Value": "[listKeys(resourceId('Microsoft.DocumentDb/databaseAccounts', parameters('databaseAccountName')), '2015-04-08').primaryMasterKey]"
             },
             {
@@ -167,6 +171,42 @@
             {
               "Value": "[concat('https://',variables('KeyVaultName'), '.vault.azure.net/')]",
               "Name": "keyvaulturl"
+            },
+            {
+              "Value": "[parameters('CRMResourceUrl')]",
+              "Name": "CRM.ResourceUrl"
+            },
+            {
+              "Value": "[parameters('AADClientAppId')]",
+              "Name": "CRM.ClientId"
+            },
+            {
+              "Value": "[variables('storageaccountName')]",
+              "Name": "CloudStorage.AccountName"
+            },
+            {
+              "Value": "archivedev",
+              "Name": "CloudStorage.ContainerName"
+            },
+            {
+              "Value": "?sv=2017-04-17&amp;ss=b&amp;srt=sco&amp;sp=r&amp;se=2017-10-18T00:47:55Z&amp;st=2017-10-16T16:47: 55Z&amp;spr=https&amp;sig=p6zPRWNY6G7UrZOce7w%2Bwg%2BXCunAc%2BfCt2DZqC90G0c%3D",
+              "Name": "CloudStorage.SASToken"
+            },
+            {
+              "Value": "listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageaccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)",
+              "Name": "CloudStorage.AccountKey"
+            },
+            {
+              "Value": "25",
+              "Name": "ThreadCount"
+            },
+            {
+              "Value": "25",
+              "Name": "SleepBetweenRuns"
+            },
+            {
+              "Value": "false",
+              "Name": "LogVerbose"
             }
           ]
         }
@@ -234,7 +274,7 @@
             "debugSetting": {
               "detailLevel": "requestContent, responseContent"
             },
-            "packageUri": "https://github.com/JitendraMishra2010/CRMArchival/raw/master/ArchivalWebApp.zip"
+            "packageUri": "https://github.com/JitendraMishra2010/CRMArchival/raw/master/Microsoft.Dynamics.Archival.ArchiveApp.zip"
           },
           "tags": {
             "displayName": "WebDeployforWebApp"
@@ -273,7 +313,6 @@
           {
             "tenantId": "[subscription().tenantId]",
             "objectId": "[parameters('ObjectId')]",
-
             "permissions": {
               "keys": [
                 "all"
