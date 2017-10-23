@@ -130,7 +130,7 @@
         "siteConfig": {
           "phpVersion": "off",
           "alwaysOn": true,
-          
+
           "connectionStrings": [
             {
               "ConnectionString": "[Concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageaccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageaccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]",
@@ -193,7 +193,7 @@
               "Name": "CloudStorage.SASToken"
             },
             {
-              "Value": "listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageaccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)",
+              "Value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageaccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]",
               "Name": "CloudStorage.AccountKey"
             },
             {
@@ -335,7 +335,7 @@
     },
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
-      "name": "[concat(variables('KeyVaultName'), '/','UserName')]",
+      "name": "[concat(variables('KeyVaultName'), '/','CRMUser')]",
       "apiVersion": "2015-06-01",
       "properties": {
         "contentType": "text/plain",
@@ -348,7 +348,7 @@
     },
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
-      "name": "[concat(variables('KeyVaultName'), '/','Password')]",
+      "name": "[concat(variables('KeyVaultName'), '/','CRMPassword')]",
       "apiVersion": "2015-06-01",
       "properties": {
         "contentType": "text/plain",
@@ -357,8 +357,107 @@
       "dependsOn": [
         "[concat('Microsoft.KeyVault/vaults/', variables('KeyVaultName'))]"
       ]
-    }
+    },
 
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[concat(variables('KeyVaultName'), '/','DocumentDBEndpointUrl')]",
+      "apiVersion": "2015-06-01",
+      "properties": {
+        "contentType": "text/plain",
+        "value": "[reference(concat('Microsoft.DocumentDb/databaseAccounts/', parameters('databaseAccountName'))).documentEndpoint]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.DocumentDB/databaseAccounts/', parameters('databaseAccountName'))]",
+        "[concat('Microsoft.KeyVault/vaults/', variables('KeyVaultName'))]"
+
+      ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[concat(variables('KeyVaultName'), '/','DocumentDBPrimaryKey')]",
+      "apiVersion": "2015-06-01",
+      "properties": {
+        "contentType": "text/plain",
+        "value": "[listKeys(resourceId('Microsoft.DocumentDb/databaseAccounts', parameters('databaseAccountName')), '2015-04-08').primaryMasterKey]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.KeyVault/vaults/', variables('KeyVaultName'))]",
+        "[concat('Microsoft.DocumentDB/databaseAccounts/', parameters('databaseAccountName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[concat(variables('KeyVaultName'), '/','CloudStorageAccountName')]",
+      "apiVersion": "2015-06-01",
+      "properties": {
+        "contentType": "text/plain",
+        "value": "[variables('storageaccountName')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.KeyVault/vaults/', variables('KeyVaultName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[concat(variables('KeyVaultName'), '/','CloudStorageAccountKey')]",
+      "apiVersion": "2015-06-01",
+      "properties": {
+        "contentType": "text/plain",
+        "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageaccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.KeyVault/vaults/', variables('KeyVaultName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[concat(variables('KeyVaultName'), '/','LogVerbose')]",
+      "apiVersion": "2015-06-01",
+      "properties": {
+        "contentType": "text/plain",
+        "value": "False"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.KeyVault/vaults/', variables('KeyVaultName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[concat(variables('KeyVaultName'), '/','CRMResourceUrl')]",
+      "apiVersion": "2015-06-01",
+      "properties": {
+        "contentType": "text/plain",
+        "value": "[parameters('CRMResourceUrl')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.KeyVault/vaults/', variables('KeyVaultName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[concat(variables('KeyVaultName'), '/','CRMClientId')]",
+      "apiVersion": "2015-06-01",
+      "properties": {
+        "contentType": "text/plain",
+        "value": "[parameters('AADClientAppId')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.KeyVault/vaults/', variables('KeyVaultName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "name": "[concat(variables('KeyVaultName'), '/','CRMClientSecret')]",
+      "apiVersion": "2015-06-01",
+      "properties": {
+        "contentType": "text/plain",
+        "value": "[parameters('AADClientsecretKey')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.KeyVault/vaults/', variables('KeyVaultName'))]"
+      ]
+    }
   ]
 }
 
