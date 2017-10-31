@@ -285,7 +285,7 @@
             "debugSetting": {
               "detailLevel": "requestContent, responseContent"
             },
-            "packageUri": "https://github.com/JitendraMishra2010/CRMArchival/raw/master/Microsoft.Dynamics.Archival.ArchiveApp.zip"
+            "packageUri": "https://github.com/JitendraMishra2010/CRMArchival/raw/master/Microsoft.Dynamics.Archival.WebappForWebJobs.zip"
           },
           "tags": {
             "displayName": "WebDeployforWebApp"
